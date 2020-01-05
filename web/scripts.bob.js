@@ -12,7 +12,7 @@ const LOG_LEVEL = 'info';
 // Note: NEVER use those exact keys in production!
 const PRIVATE_KEY = '74d427ae6a95dedde68850e0ff9da952acf69e6e41436230f126fbd220e1faea';
 const SERVER_KEY = 'f77fe623b6977d470ac8c7bf7011c4ad08a1d126896795db9d2b4b7a49ae1045';
-const TRUSTED_KEY = '232385faea4c0fca2c867bfb7ca74f634178ee0bc13364ee738e02cd4318e839';
+const TRUSTED_KEY = '8cf3ef79627d06aea07762d434528e26a74b588c02b69aaef40b9705644e5c79';
 const HOST = 'server.saltyrtc.org';
 const PORT = 443;
 const STUN_SERVER = 'stun.l.google.com:19302';
@@ -410,6 +410,7 @@ class TestClient {
     }
 
     setState(type, value) {
+        console.log(`State Changed >> type:${type} value:${value}`);
         document.querySelector(`#${type}State`).innerHTML = value;
     }
 

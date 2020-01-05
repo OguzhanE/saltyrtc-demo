@@ -1,0 +1,112 @@
+<!doctype html>
+<!--
+    Copyright (c) 2016-2019 Threema GmbH
+
+    Licensed under the Apache License, Version 2.0, <see LICENSE-APACHE file>
+    or the MIT license <see LICENSE-MIT file>, at your option. This file may not be
+    copied, modified, or distributed except according to those terms.
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>SaltyRTC Demo</title>
+        <style>
+            #state-wrapper {
+                margin: 5px 0 20px;
+            }
+            #loading {
+                padding-left: 10px;
+            }
+            #messages {
+                width: 800px;
+            }
+            #messages.disabled {
+                display: none;
+            }
+            #messages > .output,
+            #messages > .input {
+                padding: 10px 0;
+            }
+            textarea {
+                width: 100%;
+                height: 200px;
+                padding: 0;
+            }
+            .input {
+                display: flex;
+            }
+            .input input[type] {
+                flex-grow: 1;
+                margin-left: 10px;
+            }
+            .input button {
+                margin-left: 10px;
+            }
+        </style>
+        <script src="node_modules/webrtc-adapter/out/adapter_no_edge.js"></script>
+        <script src="node_modules/msgpack-lite/dist/msgpack.min.js"></script>
+        <script src="node_modules/tweetnacl/nacl-fast.min.js"></script>
+        <script src="node_modules/@saltyrtc/chunked-dc/dist/chunked-dc.es5.js"></script>
+        <script src="node_modules/@saltyrtc/client/dist/saltyrtc-client.es5.js"></script>
+        <script src="node_modules/@saltyrtc/task-webrtc/dist/saltyrtc-task-webrtc.es5.js"></script>
+        <script src="scripts.bob.js"></script>
+    </head>
+    <body>
+        <h1>SaltyRTC Demo</h1>
+
+        <h2>Keys</h2>
+        <p>
+            * Public key: <code>424280166304526b4a2874a2270d091071fcc5c98959f7d4718715626df26204</code><br>
+            * Secret key: <code>74d427ae6a95dedde68850e0ff9da952acf69e6e41436230f126fbd220e1faea</code><br>
+            * Trusted key: <code>8cf3ef79627d06aea07762d434528e26a74b588c02b69aaef40b9705644e5c79</code>
+        </p>
+
+        <h2>States</h2>
+        <table id="state-wrapper">
+            <tr>
+                <td>SaltyRTC signaling state</td>
+                <td><span id="saltySignalingState">unknown</span> <img id="loading" src="ajax-loader.gif" alt="Loading..."></td>
+            </tr>
+            <tr>
+                <td>PeerConnection signaling state</td>
+                <td><span id="rtcSignalingState">unknown</span></td>
+            </tr>
+            <tr>
+                <td>PeerConnection connection state</td>
+                <td><span id="rtcConnectionState">unknown</span></td>
+            </tr>
+            <tr>
+                <td>ICE connection state</td>
+                <td><span id="iceConnectionState">unknown</span></td>
+            </tr>
+            <tr>
+                <td>ICE gathering state</td>
+                <td><span id="iceGatheringState">unknown</span></td>
+            </tr>
+            <tr>
+                <td>Handover</td>
+                <td><span id="handoverState">no</span></td>
+            </tr>
+            <tr>
+                <td>Secure data channel state</td>
+                <td><span id="dataChannelState">unknown</span></td>
+            </tr>
+        </table>
+
+        <div id="messages" class="disabled">
+            <h2>Messaging</h2>
+            <div class="output">
+                <textarea></textarea>
+            </div>
+            <div class="input">
+                Text: <input id="chatText" type="text">
+                <button id="sendSignaling">Submit via Signaling</button>
+                <button id="sendDc" disabled="disabled">Submit via DataChannel</button>
+            </div>
+            <div class="input">
+                Binary length in KiB: <input type="number" id="binaryLength" step="64" value="64">
+                <button id="sendData">Submit binary data</button>
+            </div>
+        </div>
+    </body>
+</html>

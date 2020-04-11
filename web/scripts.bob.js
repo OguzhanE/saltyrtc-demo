@@ -11,10 +11,11 @@ const LOG_LEVEL = 'info';
 
 // Note: NEVER use those exact keys in production!
 const PRIVATE_KEY = '74d427ae6a95dedde68850e0ff9da952acf69e6e41436230f126fbd220e1faea';
-const SERVER_KEY = 'f77fe623b6977d470ac8c7bf7011c4ad08a1d126896795db9d2b4b7a49ae1045';
+// const SERVER_KEY = 'f77fe623b6977d470ac8c7bf7011c4ad08a1d126896795db9d2b4b7a49ae1045'; //'3b9f4eabcb7081fefc870f395048fd7f131c61e2b202bd592bb2f120eb153913';
+const SERVER_KEY = '3b9f4eabcb7081fefc870f395048fd7f131c61e2b202bd592bb2f120eb153913';//'f77fe623b6977d470ac8c7bf7011c4ad08a1d126896795db9d2b4b7a49ae1045'; //'3b9f4eabcb7081fefc870f395048fd7f131c61e2b202bd592bb2f120eb153913';
 const TRUSTED_KEY = '8cf3ef79627d06aea07762d434528e26a74b588c02b69aaef40b9705644e5c79';
-const HOST = 'server.saltyrtc.org';
-const PORT = 443;
+const HOST =  'localhost'; // 'server.saltyrtc.org';
+const PORT = 3838; // 443;
 const STUN_SERVER = 'stun.l.google.com:19302';
 const TURN_SERVER = null;
 const TURN_USER = null;
@@ -331,7 +332,7 @@ class TestClient {
         // Create crypto context
         // Note: We need to apply encrypt-then-chunk for backwards
         //       compatibility reasons.
-        const crypto = this.task.getCryptoContext(dc.id);
+        const crypto = this.task.createCryptoContext(dc.id);
 
         // Create unchunker
         // Note: We need to use an unreliable unordered unchunker for backwards
@@ -456,5 +457,5 @@ document.addEventListener('DOMContentLoaded', () => {
     console.info('For debugging purposes, the test client instance is exposed as `window.client`.');
     window.client = testClient;
 
-    testClient.start();
+    // testClient.start();
 });

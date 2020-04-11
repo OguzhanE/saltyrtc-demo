@@ -11,10 +11,11 @@ const LOG_LEVEL = 'info';
 
 // Note: NEVER use those exact keys in production!
 const PRIVATE_KEY = '9c2e868e4a28a092bfed363351e3c00ba786e47eafce45fb7ccef2236f11ebd5';
-const SERVER_KEY = 'f77fe623b6977d470ac8c7bf7011c4ad08a1d126896795db9d2b4b7a49ae1045';
+// const SERVER_KEY = 'f77fe623b6977d470ac8c7bf7011c4ad08a1d126896795db9d2b4b7a49ae1045';
+const SERVER_KEY = '3b9f4eabcb7081fefc870f395048fd7f131c61e2b202bd592bb2f120eb153913';//'f77fe623b6977d470ac8c7bf7011c4ad08a1d126896795db9d2b4b7a49ae1045'; //'3b9f4eabcb7081fefc870f395048fd7f131c61e2b202bd592bb2f120eb153913';
 const TRUSTED_KEY = '424280166304526b4a2874a2270d091071fcc5c98959f7d4718715626df26204';
-const HOST = 'server.saltyrtc.org';
-const PORT = 443;
+const HOST =  'localhost'; // 'server.saltyrtc.org';
+const PORT = 3838; // 443;
 const STUN_SERVER = 'stun.l.google.com:19302';
 const TURN_SERVER = null;
 const TURN_USER = null;
@@ -166,7 +167,7 @@ class TestClient {
         // Let the "negotiationneeded" event trigger offer generation
         this.pc.onnegotiationneeded = () => {
             console.debug('Negotiation needed...');
-            this.initiatorFlow().catch((e) => {
+            this.responderFlow().catch((e) => {
                 console.error('Unable to send error:', e);
             });
         };
@@ -300,6 +301,28 @@ class TestClient {
         this.sdc = dc;
     }
 
+    async responderFlow() {
+
+        const receiveOffer = () => {
+            return new Promise((resolve)=>{
+                this.task.once('offer', (offer)=>{
+                    // debugger;
+                    resolve(offer.data);
+                })
+            });
+        }
+
+        let offer = await receiveOffer();
+        await this.pc.setRemoteDescription(offer)
+                .catch(err => console.error('Could not set remote description', err));
+        console.debug('Initiator: Received offer, set remote description');
+        // debugger;
+        let answer = await this.pc.createAnswer();
+        await this.pc.setLocalDescription(answer);
+        console.debug('Initiator: Created answer, set local description');
+        this.task.sendAnswer(answer);
+    }
+
     async initiatorFlow() {
         // Register answer handler
         this.task.once('answer', async (answer) => {
@@ -331,7 +354,7 @@ class TestClient {
         // Create crypto context
         // Note: We need to apply encrypt-then-chunk for backwards
         //       compatibility reasons.
-        const crypto = this.task.getCryptoContext(dc.id);
+        const crypto = this.task.createCryptoContext(dc.id);
 
         // Create unchunker
         // Note: We need to use an unreliable unordered unchunker for backwards
@@ -361,6 +384,7 @@ class TestClient {
         };
         // noinspection JSUndefinedPropertyAssignment
         unchunker.onMessage = (array) => {
+
             const box = saltyrtcClient.Box.fromUint8Array(
                 array, saltyrtcTaskWebrtc.DataChannelCryptoContext.NONCE_LENGTH);
             const message = crypto.decrypt(box);
@@ -456,5 +480,5 @@ document.addEventListener('DOMContentLoaded', () => {
     console.info('For debugging purposes, the test client instance is exposed as `window.client`.');
     window.client = testClient;
 
-    testClient.start();
+    // testClient.start();
 });
